@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="lobby.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <h1>Trappist-1 Chess</h1>
+    <h3>Lobby</h3>
+    <label for="name">Name:</label>
+    <input disabled
+           type="text"
+           id="name"
+           onkeydown = "if (event.keyCode == 13) {
+                            document.getElementById('setName').click();
+                        }"
+           ></input>
+    <button disabled id="setName" onclick="setName();">Set</button>
+    <br>
+    <select name="players" size="2" id="players" onchange="document.getElementById('start').disabled=false;">
+        <option disabled>Connecting to server...</option>
+    </select>
+    <br>
+    <button disabled id="start" onclick="startGame();">Start game</button>
+</body>
+</html>
