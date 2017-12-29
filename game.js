@@ -6,7 +6,7 @@ var boardLoc = [0,0];
 var squareSize;
 var flip = myPlayer == 'black';
 
-var socket = new WebSocket('ws://'+location.hostname+':5000/');
+var socket = new WebSocket('ws://'+location.hostname+':55555/');
 socket.onmessage = function(event) {
     message = JSON.parse(event.data)
     console.log('recieved', message)

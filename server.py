@@ -96,5 +96,5 @@ class ChessSocket(WebSocket):
         print(self.address, 'closed')
 
 if __name__ == '__main__':
-    server = SimpleWebSocketServer('', 5000, ChessSocket)
+    server = SimpleWebSocketServer('', 55555, ChessSocket)
     server.serveforever()
