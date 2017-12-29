@@ -1,4 +1,4 @@
-# A web-based player for the chess variant [Trappist-1](http://www.chessvariants.com/invention/chess-on-an-infinite-plane)
+# A web-based player for the chess variant [Trappist-1](http://www.chessvariants.com/invention/trappist-1)
 
 Trappist-1 is an interesting chess variant that is played on an infinite gameboard,
 and has several new pieces:
