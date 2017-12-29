@@ -17,7 +17,11 @@
            ></input>
     <button disabled id="setName" onclick="setName();">Set</button>
     <br>
-    <select name="players" size="2" id="players" onchange="document.getElementById('start').disabled=false;">
+    <select name="players"
+            size="2"
+            id="players"
+            style="width: 48em; height: 24em;"
+            onchange="document.getElementById('start').disabled=false;">
         <option disabled>Connecting to server...</option>
     </select>
     <br>

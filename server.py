@@ -31,16 +31,22 @@ class ChessSocket(WebSocket):
                     if otherAddress in lobby:
                         gameId = uuid.uuid4().hex
                         games[gameId] = Game()
-                        self.redirectToGame(gameId)
-                        lobby[otherAddress]['socket'].redirectToGame(gameId)
+                        self.redirectToGame(gameId, 'white')
+                        lobby[otherAddress]['socket'].redirectToGame(gameId, 'black')
+            elif message['page'] == 'game':
+                if message['message'] == 'joinGame':
+                    games[message['gameId']].addPlayer(message['player'], self)
+                if message['message'] == 'move':
+                    games[message['gameId']].makeMove(message)
         except Exception as e:
             traceback.print_exc()
             raise e
 
-    def redirectToGame(self, gameId):
+    def redirectToGame(self, gameId, player):
         self.sendMessage(json.dumps({
             'message': 'startGame',
             'gameId': gameId,
+            'player': player,
         }))
 
     def newPlayer(self, message):

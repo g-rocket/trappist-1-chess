@@ -57,7 +57,7 @@ socket.onmessage = function(event) {
         updateLobby(message.players)
         break;
     case 'startGame':
-        window.location.href = '/game.html?' + message.gameId
+        window.location.href = '/game.html?' + message.gameId + ',' + message.player;
     }
 }
 
