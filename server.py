@@ -37,7 +37,7 @@ class ChessSocket(WebSocket):
                 if message['message'] == 'joinGame':
                     games[message['gameId']].addPlayer(message['player'], self)
                 if message['message'] == 'move':
-                    games[message['gameId']].makeMove(message)
+                    games[message['gameId']].makeMove(message['player'], message['pieceName'], message['pieceIndex'], message['dest'])
         except Exception as e:
             traceback.print_exc()
             raise e

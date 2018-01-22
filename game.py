@@ -6,36 +6,36 @@ class Game:
             'white': {
                 'pawn': [
                     # left jager unit
-                    [ 1,  0],
-                    [ 2,  1],
-                    [ 3,  2],
-                    [ 4,  1],
-                    [ 5,  0],
+                    [ 1,  0, 0],
+                    [ 2,  1, 0],
+                    [ 3,  2, 0],
+                    [ 4,  1, 0],
+                    [ 5,  0, 0],
                     # right jager unit
-                    [18,  0],
-                    [19,  1],
-                    [20,  2],
-                    [21,  1],
-                    [22,  0],
+                    [18,  0, 0],
+                    [19,  1, 0],
+                    [20,  2, 0],
+                    [21,  1, 0],
+                    [22,  0, 0],
                     # extras left of traditional line
-                    [ 4,  7],
-                    [ 5,  8],
-                    [ 6,  9],
-                    [ 7,  9],
+                    [ 4,  7, 0],
+                    [ 5,  8, 0],
+                    [ 6,  9, 0],
+                    [ 7,  9, 0],
                     # extras right of traditional line
-                    [19,  7],
-                    [18,  8],
-                    [17,  9],
-                    [16,  9],
+                    [19,  7, 0],
+                    [18,  8, 0],
+                    [17,  9, 0],
+                    [16,  9, 0],
                     # traditional
-                    [ 8,  9],
-                    [ 9,  9],
-                    [10,  9],
-                    [11,  9],
-                    [12,  9],
-                    [13,  9],
-                    [14,  9],
-                    [15,  9],
+                    [ 8,  9, 0],
+                    [ 9,  9, 0],
+                    [10,  9, 0],
+                    [11,  9, 0],
+                    [12,  9, 0],
+                    [13,  9, 0],
+                    [14,  9, 0],
+                    [15,  9, 0],
                 ],
                 'knight': [
                     #extras
@@ -83,36 +83,36 @@ class Game:
             'black': {
                 'pawn': [
                     # left jager unit
-                    [ 1, 23],
-                    [ 2, 22],
-                    [ 3, 21],
-                    [ 4, 22],
-                    [ 5, 23],
+                    [ 1, 23, 0],
+                    [ 2, 22, 0],
+                    [ 3, 21, 0],
+                    [ 4, 22, 0],
+                    [ 5, 23, 0],
                     # right jager unit
-                    [18, 23],
-                    [19, 22],
-                    [20, 21],
-                    [21, 22],
-                    [22, 23],
+                    [18, 23, 0],
+                    [19, 22, 0],
+                    [20, 21, 0],
+                    [21, 22, 0],
+                    [22, 23, 0],
                     # extras left of traditional line
-                    [ 4, 16],
-                    [ 5, 15],
-                    [ 6, 14],
-                    [ 7, 14],
+                    [ 4, 16, 0],
+                    [ 5, 15, 0],
+                    [ 6, 14, 0],
+                    [ 7, 14, 0],
                     # extras right of traditional line
-                    [19, 16],
-                    [18, 15],
-                    [17, 14],
-                    [16, 14],
+                    [19, 16, 0],
+                    [18, 15, 0],
+                    [17, 14, 0],
+                    [16, 14, 0],
                     # traditional
-                    [ 8, 14],
-                    [ 9, 14],
-                    [10, 14],
-                    [11, 14],
-                    [12, 14],
-                    [13, 14],
-                    [14, 14],
-                    [15, 14],
+                    [ 8, 14, 0],
+                    [ 9, 14, 0],
+                    [10, 14, 0],
+                    [11, 14, 0],
+                    [12, 14, 0],
+                    [13, 14, 0],
+                    [14, 14, 0],
+                    [15, 14, 0],
                 ],
                 'knight': [
                     #extras
@@ -168,20 +168,36 @@ class Game:
             'pieces': self.pieces,
         }))
 
-    def makeMove(self, message):
-        if message['player'] != self.turn:
+    def makeMove(self, player, pieceName, pieceIndex, dest):
+        if player != self.turn or not self.validateMove(player, pieceName, pieceIndex, dest):
             print('invalid move')
             return
         self.turn = otherPlayer(self.turn)
-        self.pieces[message['player']][message['pieceName']][message['pieceIndex']] = message['dest']
-        otherPlayerPieces = self.pieces[otherPlayer(message['player'])]
-        for pieceName, piecesByName in otherPlayerPieces.items():
-            otherPlayerPieces[pieceName] = [piece for piece in piecesByName if piece != message['dest']]
+        # preserve en passant markers
+        piece = self.pieces[player][pieceName][pieceIndex]
+        if pieceName == 'pawn':
+            self.pieces[player][pieceName][pieceIndex] = dest + [piece[2]]
+        else:
+            self.pieces[player][pieceName][pieceIndex] = dest
+        otherPlayerPieces = self.pieces[otherPlayer(player)]
+        # expire old en passant markers
+        for pawn in self.pieces[player]['pawn']:
+            if pawn[2] == 1:
+                pawn[2] = 2
+        # mark en passant
+        if pieceName == 'pawn' and piece[2] == 0:
+            if piece
+            self.pieces[player][pieceName][pieceIndex][2] = 1
+        for otherPieceName, otherPieces in otherPlayerPieces.items():
+            otherPlayerPieces[otherPieceName] = [piece for piece in otherPieces if piece != dest]
         for socket in self.players:
             socket.sendMessage(json.dumps({
                 'message': 'updateBoard',
                 'pieces': self.pieces,
             }))
+
+    def validateMove(self, player, pieceName, pieceIndex, dest):
+        return True
 
 def otherPlayer(player):
     return 'black' if player == 'white' else 'white'

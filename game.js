@@ -6,6 +6,19 @@ var boardLoc = [0,0];
 var squareSize;
 var flip = myPlayer == 'black';
 
+var piecePaths = {
+    'pawn': 'M20 80 A35 35 0 1 1 80 80 Z M20 90 H80',
+    'rook': 'M20 80 V20 H80 V80 Z M20 90 H80',
+    'chancelor': 'M20 80 V55 H45 V80 Z M55 80 V55 H80 V80 Z M20 45 V20 H45 V45 Z M55 45 V20 H80 V45 Z M20 90 H80',
+    'bishop': 'M20 80 L50 20 L80 80 Z M20 90 H80',
+    'knight': 'M55 80 V55 H80 V80 Z M20 45 V20 H45 V45 Z M55 45 V20 H80 V45 Z M55 90 H80',
+    'hawk': 'M40 80 L50 20 L60 80 Z M40 90 H60',
+    'guard': 'M20 80 A35 35 0 1 1 80 80 Z M30 70 L50 35 L70 70 Z M20 90 H80',
+    'king': 'M20 80 A35 35 0 0 1 10 55 H45 V80 Z M10 45 A35 35 0 0 1 45 10 V45 Z M90 45 A35 35 0 0 0 55 10 V45 Z M80 80 A35 35 0 0 0 90 55 H55 V80 Z M20 90 H80',
+    'huygens': 'M20 80 L30 55 H45 V80 Z M55 80 V55 H70 L80 80 Z M35 45 L45 20 V45 Z M55 45 V20 L65 45 Z M20 90 H80',
+    'queen': 'M20 80 V20 H80 V80 Z L50 30 L80 80 M20 90 H80',
+}
+
 var socket = new WebSocket('ws://'+location.hostname+':55555/');
 socket.onmessage = function(event) {
     message = JSON.parse(event.data)
@@ -27,160 +40,8 @@ socket.onopen = function(event) {
 }
 
 var pieces = {
-    'white': {
-        'pawn': [
-            // left jager unit
-            [ 1,  0],
-            [ 2,  1],
-            [ 3,  2],
-            [ 4,  1],
-            [ 5,  0],
-            // right jager unit
-            [18,  0],
-            [19,  1],
-            [20,  2],
-            [21,  1],
-            [22,  0],
-            // extras left of traditional line
-            [ 4,  7],
-            [ 5,  8],
-            [ 6,  9],
-            [ 7,  9],
-            // extras right of traditional line
-            [19,  7],
-            [18,  8],
-            [17,  9],
-            [16,  9],
-            // traditional
-            [ 8,  9],
-            [ 9,  9],
-            [10,  9],
-            [11,  9],
-            [12,  9],
-            [13,  9],
-            [14,  9],
-            [15,  9],
-        ],
-        'knight': [
-            //extras
-            [10,  7],
-            [13,  7],
-            //traditional
-            [ 9,  8],
-            [14,  8],
-        ],
-        'bishop': [
-            //extras
-            [11,  7],
-            [12,  7],
-            //traditional
-            [10,  8],
-            [13,  8],
-        ],
-        'rook': [
-            [ 6,  8],
-            [17,  8],
-        ],
-        'queen': [
-            [11,  8],
-        ],
-        'king': [
-            [12,  8],
-        ],
-        'chancelor': [
-            [ 7,  8],
-            [16,  8],
-        ],
-        'hawk': [
-            [ 3,  0],
-            [20,  0],
-        ],
-        'guard': [
-            [ 8,  8],
-            [15,  8],
-        ],
-        'huygens': [
-            [ 5,  7],
-            [18,  7],
-        ],
-    },
-    'black': {
-        'pawn': [
-            // left jager unit
-            [ 1, 23],
-            [ 2, 22],
-            [ 3, 21],
-            [ 4, 22],
-            [ 5, 23],
-            // right jager unit
-            [18, 23],
-            [19, 22],
-            [20, 21],
-            [21, 22],
-            [22, 23],
-            // extras left of traditional line
-            [ 4, 16],
-            [ 5, 15],
-            [ 6, 14],
-            [ 7, 14],
-            // extras right of traditional line
-            [19, 16],
-            [18, 15],
-            [17, 14],
-            [16, 14],
-            // traditional
-            [ 8, 14],
-            [ 9, 14],
-            [10, 14],
-            [11, 14],
-            [12, 14],
-            [13, 14],
-            [14, 14],
-            [15, 14],
-        ],
-        'knight': [
-            //extras
-            [10, 16],
-            [13, 16],
-            //traditional
-            [ 9, 15],
-            [14, 15],
-        ],
-        'bishop': [
-            //extras
-            [11, 16],
-            [12, 16],
-            //traditional
-            [10, 15],
-            [13, 15],
-        ],
-        'rook': [
-            [ 6, 15],
-            [17, 15],
-        ],
-        'queen': [
-            [11, 15],
-        ],
-        'king': [
-            [12, 15],
-        ],
-        'chancelor': [
-            [ 7, 15],
-            [16, 15],
-        ],
-        'hawk': [
-            [ 3, 23],
-            [20, 23],
-        ],
-        'guard': [
-            [ 8, 15],
-            [15, 15],
-        ],
-        'huygens': [
-            [ 5, 16],
-            [18, 16],
-        ],
-    },
+    'white': {},
+    'black': {},
 }
 var selectedPiece = [null, null, null];
 
@@ -259,10 +120,10 @@ function getPiece(x, y) {
     return [null, null, null];
 }
 
-function getPossibleMoves(pieceName, x, y, minX, minY, maxX, maxY) {
+function getPossibleMoves(pieceName, player, x, y, minX, minY, maxX, maxY) {
     switch(pieceName) {
     case 'pawn':
-        var dir = flip? -1: 1;
+        var dir = player == 'white'? 1: -1;
         return [
             [x+1, y + dir],
             [x-1, y + dir],
@@ -270,7 +131,8 @@ function getPossibleMoves(pieceName, x, y, minX, minY, maxX, maxY) {
             return getPiece(mx, my)[0] != null;
         }).concat([[x, y + dir]].concat(
             [[x, y + dir + dir]].filter(function() {
-                return (myPlayer == 'white' && y == 9) || (myPlayer == 'black' && y == 14);
+                console.log(pieces[player][pieceName][getPiece(x, y)[2]])
+                return pieces[player][pieceName][getPiece(x, y)[2]][2] == 0;
         })).filter(function([mx, my]) {
             return getPiece(mx, my)[0] == null;
         }));
@@ -305,8 +167,8 @@ function getPossibleMoves(pieceName, x, y, minX, minY, maxX, maxY) {
             [x+3, y+3],
         ];
     case 'chancelor':
-        return getPossibleMoves('knight', x, y, minX, minY, maxX, maxY).concat(
-            getPossibleMoves('rook', x, y, minX, minY, maxX, maxY))
+        return getPossibleMoves('knight', player, x, y, minX, minY, maxX, maxY).concat(
+            getPossibleMoves('rook', player, x, y, minX, minY, maxX, maxY))
     case 'guard':
         return [
             [x-1, y-1],
@@ -327,8 +189,8 @@ function getPossibleMoves(pieceName, x, y, minX, minY, maxX, maxY) {
             }
         );
     case 'queen':
-        return getPossibleMoves('rook', x, y, minX, minY, maxX, maxY).concat(
-            getPossibleMoves('bishop', x, y, minX, minY, maxX, maxY))
+        return getPossibleMoves('rook', player, x, y, minX, minY, maxX, maxY).concat(
+            getPossibleMoves('bishop', player, x, y, minX, minY, maxX, maxY))
     case 'bishop':
         moves = [];
         for(var [dx, dy] of [[-1,-1], [1,-1], [-1,1], [1,1]]) {
@@ -354,7 +216,7 @@ function getPossibleMoves(pieceName, x, y, minX, minY, maxX, maxY) {
         }
         return moves;
     case 'king':
-        return getPossibleMoves('guard', x, y, minX, minY, maxX, maxY).filter(function([mx,my]) {
+        return getPossibleMoves('guard', player, x, y, minX, minY, maxX, maxY).filter(function([mx,my]) {
             return true;
         });
     default:
@@ -373,7 +235,7 @@ function isPrime(x) {
 }
 
 function getValidMoves(pieceName, x, y, minX, minY, maxX, maxY) {
-    return getPossibleMoves(pieceName, x, y, minX, minY, maxX, maxY).map(
+    return getPossibleMoves(pieceName, myPlayer, x, y, minX, minY, maxX, maxY).map(
         function([mx, my]) {
             return [mx, my, getPiece(mx, my)[0]];
         }
@@ -451,6 +313,17 @@ function renderGame() {
             }
             ctx.fillRect(r.sX(mx), r.sY(my), r.squareSize, r.squareSize);
         }
+    } else if(selectedPiece[0] != null) {
+        var pieceName = selectedPiece[1];
+        var [x, y] = pieces[selectedPiece[0]][pieceName][selectedPiece[2]];
+        for(var [mx, my, mplayer] of getPossibleMoves(pieceName, selectedPiece[0], x, y, r.minX, r.minY, r.maxX, r.maxY)) {
+            if((mx+my) % 2) {
+                ctx.fillStyle = 'rgb(100, 100, 200)'
+            } else {
+                ctx.fillStyle = 'rgb(0, 0, 150)'
+            }
+            ctx.fillRect(r.sX(mx), r.sY(my), r.squareSize, r.squareSize);
+        }
     }
     for(var player in pieces) {
         for(var pieceName in pieces[player]) {
@@ -458,9 +331,15 @@ function renderGame() {
                 if(player == 'white') {
                     ctx.fillStyle = 'rgb(255, 255, 255)'
                 } else {
-                    ctx.fillStyle = 'rgb(0, 0, 0)'
+                    ctx.fillStyle = 'rgb(255, 0, 0)'
                 }
-                ctx.fillText(pieceName, r.sX(piece[0]), r.sY(piece[1]) + r.squareSize/2, r.squareSize)
+                ctx.strokeStyle = 'rgb(0, 0, 0)'
+                var piecePath = new Path2D(piecePaths[pieceName])
+                ctx.save();
+                ctx.transform(r.squareSize/100, 0, 0, r.squareSize/100, r.sX(piece[0]), r.sY(piece[1]));
+                ctx.fill(piecePath);
+                ctx.stroke(piecePath);
+                ctx.restore();
             }
         }
     }
