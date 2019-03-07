@@ -186,10 +186,10 @@ class Game:
                 pawn[2] = 2
         # mark en passant
         if pieceName == 'pawn' and piece[2] == 0:
-            if piece
+            #if piece
             self.pieces[player][pieceName][pieceIndex][2] = 1
         for otherPieceName, otherPieces in otherPlayerPieces.items():
-            otherPlayerPieces[otherPieceName] = [piece for piece in otherPieces if piece != dest]
+            otherPlayerPieces[otherPieceName] = [piece for piece in otherPieces if piece[:2] != dest]
         for socket in self.players:
             socket.sendMessage(json.dumps({
                 'message': 'updateBoard',
