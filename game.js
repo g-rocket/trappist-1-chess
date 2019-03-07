@@ -26,6 +26,7 @@ socket.onmessage = function(event) {
     switch(message.message) {
     case 'updateBoard':
         pieces = message.pieces;
+        selectedPiece = [null, null, null];
         renderGame();
     }
 }
