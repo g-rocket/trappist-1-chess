@@ -229,7 +229,7 @@ function getPossibleMoves(pieceName, player, x, y, minX, minY, maxX, maxY) {
 function isPrime(x) {
     if(x == 1 || (x%2) == 0 || (x%3) == 0) return false;
     var maxDiv = Math.sqrt(x);
-    for(var divM6 = 6; divM6-1 < maxDiv; divM6 += 6) {
+    for(var divM6 = 6; divM6-1 <= maxDiv; divM6 += 6) {
         if(x%(divM6-1) == 0 || x%(divM6+1) == 0) return false;
     }
     return true;
