@@ -16,7 +16,7 @@ This is a work in progress.
 Current major missing features:
 * Pawn promotion
 * En passant
-* Proper handling of 2-square first move for pawns that start on different rows
+* Castling
 * Automatic detection of check and checkmate
 * Serverside validation of moves
 * Secure websockets (to support serving over https)
