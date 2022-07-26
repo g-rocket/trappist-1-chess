@@ -11,6 +11,7 @@ This works by running a python websocket server (by default on port 55555) to ru
 and serving up static HTML / javascript pages.
 To play, run server.py, start some sort of webserver, and load up index.html in your browser.
 Currently, secure websockets aren't supported, but I'm working on that.
+**Play online at http://chess.yancey.io/**
 
 This is a work in progress.
 Current major missing features:
