@@ -17,7 +17,6 @@ This is a work in progress.
 Current major missing features:
 * Pawn promotion
 * En passant
-* Castling
 * Automatic detection of check and checkmate
 * Serverside validation of moves
 * Secure websockets (to support serving over https)
