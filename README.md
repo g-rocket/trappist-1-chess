@@ -20,3 +20,6 @@ Current major missing features:
 * Automatic detection of check and checkmate
 * Serverside validation of moves
 * Secure websockets (to support serving over https)
+* Something that says who's turn it is
+* List of captured pieces
+* Optional (configurable) timer
