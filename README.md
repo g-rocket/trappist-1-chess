@@ -23,3 +23,5 @@ Current major missing features:
 * Something that says who's turn it is
 * List of captured pieces
 * Optional (configurable) timer
+* Save/restore running games serverside so the server can be restarted without losing in-progress games
+* Optional notifications when it's your turn (for play-by-post)
